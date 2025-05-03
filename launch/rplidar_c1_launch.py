@@ -6,7 +6,7 @@ from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
 from launch.actions import LogInfo
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 
 
@@ -67,5 +67,15 @@ def generate_launch_description():
                          'angle_compensate': angle_compensate,
                          'scan_mode': scan_mode}],
             output='screen'),
+        
+        Node(
+            package="laser_filters",
+            executable="scan_to_scan_filter_chain",
+            parameters=[
+                PathJoinSubstitution([
+                    get_package_share_directory("navigation_pkg"),
+                    "config/nav", "box_filter.yaml",
+                ])],
+        )
     ])
 
